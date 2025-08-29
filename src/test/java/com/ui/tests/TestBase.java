@@ -20,16 +20,15 @@ public class TestBase {
 	protected HomePage homepage;
 	Logger logger = LoggerUtility.getLogger(this.getClass());
 	private boolean isLambdaTest;
+	private WebDriver lambdaDriver;
 
 	@Parameters({ "browser", "isLambdaTest", "isHeadless" })
 	@BeforeMethod(description = "Load the HomePage of the website")
-	public void Setup(
-			@Optional("chrome") String browser, 
-			@Optional("false") boolean isLambdaTest,
+	public void Setup(@Optional("chrome") String browser, @Optional("false") boolean isLambdaTest,
 			@Optional("true") boolean isHeadless, ITestResult result) {
 
 		this.isLambdaTest = isLambdaTest;
-		WebDriver lambdaDriver;
+
 		if (isLambdaTest) {
 
 			lambdaDriver = LambdaTestUtility.initializeLambdaSession(browser, result.getMethod().getMethodName());

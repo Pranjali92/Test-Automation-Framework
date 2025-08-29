@@ -32,7 +32,7 @@ public class TestBase {
 		if (isLambdaTest) {
 
 			lambdaDriver = LambdaTestUtility.initializeLambdaSession(browser, result.getMethod().getMethodName());
-			  
+			homepage = new HomePage(lambdaDriver);
 		} else {
 			// running the test on local machine
 			logger.info("Load the HomePage of the website");

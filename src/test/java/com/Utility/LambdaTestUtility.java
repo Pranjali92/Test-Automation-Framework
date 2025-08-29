@@ -1,6 +1,5 @@
 package com.Utility;
 
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
@@ -17,7 +16,7 @@ public class LambdaTestUtility {
 	public static WebDriver initializeLambdaSession(String browser, String testName) {
 		DesiredCapabilities capabilities = new DesiredCapabilities();
 		capabilities.setCapability("browserName", browser);
-		capabilities.setCapability("browserVersion", "127");
+		capabilities.setCapability("browserVersion", "latest");
 		Map<String, Object> ltOptions = new HashMap();
 		ltOptions.put("user", "pranjalinirmal92");
 		ltOptions.put("accessKey", "LT_OtkLvWFJCboqyD2rfvbr6Wrgsc8p3IexVw2qeEmpYEJimlU");
@@ -31,9 +30,8 @@ public class LambdaTestUtility {
 		WebDriver driver = null;
 		try {
 			driver = new RemoteWebDriver(new URL(HUB_URL), capabilitiesLocal.get());
-		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		} catch (Exception e) {
+			throw new RuntimeException("❌ Failed to initialize LambdaTest session", e);
 		}
 		driverLocal.set(driver);
 		return driverLocal.get();

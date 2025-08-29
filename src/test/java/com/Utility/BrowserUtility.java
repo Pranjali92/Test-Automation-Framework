@@ -27,7 +27,7 @@ import com.constants.Browser;
 
 public abstract class BrowserUtility {
 
-	protected static ThreadLocal<WebDriver> driver = new ThreadLocal<WebDriver>();
+	private static ThreadLocal<WebDriver> driver = new ThreadLocal<WebDriver>();
 	Logger logger = LoggerUtility.getLogger(getClass());
 
 	public WebDriver getDriver() {
@@ -60,7 +60,7 @@ public abstract class BrowserUtility {
 				ChromeOptions options = new ChromeOptions();
 //				options.addArguments("--headless=old");
 				options.addArguments("--headless=new");
-		        options.addArguments("--disable-gpu");
+				options.addArguments("--disable-gpu");
 				options.addArguments("--window-size=1920,1080");
 				driver.set(new ChromeDriver(options));
 			} else {

@@ -39,7 +39,7 @@ public final class HomePage extends BrowserUtility {
 		LoginPage loginpage = new LoginPage(getDriver());
 		return loginpage;
 	}
-	
+
 //	public LoginPage goToLoginPage() {
 //        logger.info("Trying to click on Sign in link...");
 //
@@ -55,9 +55,9 @@ public final class HomePage extends BrowserUtility {
 //    }
 
 	public static void quit() {
-		if (driver.get() != null) {
-			driver.get().quit();
-		}
+//		if (driver.get() != null) {
+//			driver.get().quit();
+//		}
 
 	}
 

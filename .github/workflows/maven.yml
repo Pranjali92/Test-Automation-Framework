@@ -44,9 +44,12 @@ jobs:
     - name: Upload HTML Report as Artifact
       if: always()
       uses: actions/upload-artifact@v4.6.2
-      with:
+      with: 
        name: html-report
-       path: report.html
+       path: |
+         report.html
+         target/surefire-reports/*.html
+         test-output/*.html
 
     - name: Test Execution Status
       if: always()

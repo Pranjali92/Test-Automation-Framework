@@ -60,7 +60,7 @@ public class TestBase {
 //		}
 //	}
 
-	@AfterMethod(description = "Tear Down the Browser")
+	@AfterMethod(description = "Tear Down the Browser" , alwaysRun = true)
 	public void tearDown() {
 		try {
 			if (isLambdaTest) {

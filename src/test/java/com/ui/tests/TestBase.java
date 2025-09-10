@@ -1,6 +1,9 @@
 package com.ui.tests;
 
 import static com.constants.Browser.*;
+
+import java.util.Set;
+
 import com.ui.pages.HomePage;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.WebDriver;
@@ -97,29 +100,34 @@ public class TestBase {
 	@AfterSuite
 	public void cleanUpSuite() {
 	    try {
-	        // Flush ExtentReports
 	        ExtentReporterUtility.flushReport();
 	        System.out.println("ExtentReports flushed and closed");
 
-	        // Remove ThreadLocal WebDriver
 	        BrowserUtility.removeDriver();
 	        System.out.println("ThreadLocal WebDriver cleaned up");
 
-	        // Shutdown Log4j background threads
 	        LogManager.shutdown();
 	        System.out.println("Log4j shutdown completed");
+
+	        // 🔎 List all active threads
+	        Set<Thread> threadSet = Thread.getAllStackTraces().keySet();
+	        System.out.println("=== Live Threads at Suite End ===");
+	        for (Thread t : threadSet) {
+	            System.out.println("Thread: " + t.getName() 
+	                + " | Daemon: " + t.isDaemon() 
+	                + " | State: " + t.getState());
+	        }
+	        System.out.println("================================");
 
 	    } catch (Exception e) {
 	        System.err.println("Error during suite cleanup: " + e.getMessage());
 	    } finally {
-	        // Delay exit slightly to allow async threads to complete
 	        new Thread(() -> {
 	            try { Thread.sleep(1000); } catch (InterruptedException ignored) {}
 	            System.exit(0);
 	        }).start();
 	    }
 	}
-
 
 
 }

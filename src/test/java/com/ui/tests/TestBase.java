@@ -71,7 +71,9 @@ public class TestBase {
 			System.out.println("tearDown completed: Browser quit successfully");
 		} catch (Exception e) {
 			System.err.println("Error during tearDown: " + e.getMessage());
-		}
+		} finally {
+	        BrowserUtility.removeDriver();
+	    }
 	}
 
 //	@AfterSuite
@@ -110,10 +112,14 @@ public class TestBase {
 	    } catch (Exception e) {
 	        System.err.println("Error during suite cleanup: " + e.getMessage());
 	    } finally {
-	        // Force JVM exit to avoid GitHub Actions hang
-	        System.exit(0);
+	        // Delay exit slightly to allow async threads to complete
+	        new Thread(() -> {
+	            try { Thread.sleep(1000); } catch (InterruptedException ignored) {}
+	            System.exit(0);
+	        }).start();
 	    }
 	}
+
 
 
 }

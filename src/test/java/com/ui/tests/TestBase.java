@@ -6,11 +6,13 @@ import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.WebDriver;
 import org.testng.ITestResult;
 import org.testng.annotations.AfterMethod;
+import org.testng.annotations.AfterSuite;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Optional;
 import org.testng.annotations.Parameters;
 
 import com.Utility.BrowserUtility;
+import com.Utility.ExtentReporterUtility;
 import com.Utility.LambdaTestUtility;
 import com.Utility.LoggerUtility;
 import com.constants.Browser;
@@ -24,8 +26,7 @@ public class TestBase {
 
 	@Parameters({ "browser", "isLambdaTest", "isHeadless" })
 	@BeforeMethod(description = "Load the HomePage of the website")
-	public void Setup(@Optional("chrome") String browser, 
-			@Optional("false") boolean isLambdaTest,
+	public void Setup(@Optional("chrome") String browser, @Optional("false") boolean isLambdaTest,
 			@Optional("false") boolean isHeadless, ITestResult result) {
 
 		this.isLambdaTest = isLambdaTest;
@@ -47,14 +48,44 @@ public class TestBase {
 		return homepage;
 	}
 
+//	@AfterMethod(description = "Tear Down the Browser")
+//	public void tearDown() {
+//
+//		if (isLambdaTest) {
+//			LambdaTestUtility.quitSession();
+//
+//		} else {
+//			HomePage.quit();
+//		}
+//	}
+
 	@AfterMethod(description = "Tear Down the Browser")
 	public void tearDown() {
+		try {
+			if (isLambdaTest) {
+				LambdaTestUtility.quitSession(); // quits LambdaTest session
+			} else {
+				HomePage.quit(); // quits local headless browser
+			}
+			System.out.println("tearDown completed: Browser quit successfully");
+		} catch (Exception e) {
+			System.err.println("Error during tearDown: " + e.getMessage());
+		}
+	}
 
-		if (isLambdaTest) {
-			LambdaTestUtility.quitSession();
+	@AfterSuite
+	public void cleanUpSuite() {
+		try {
+			// Flush ExtentReports
+			ExtentReporterUtility.flushReport();
+			System.out.println("ExtentReports flushed and closed");
 
-		} else {
-			HomePage.quit();
+			// Remove ThreadLocal WebDriver
+			BrowserUtility.removeDriver();
+			System.out.println("ThreadLocal WebDriver cleaned up");
+
+		} catch (Exception e) {
+			System.err.println("Error during suite cleanup: " + e.getMessage());
 		}
 	}
 

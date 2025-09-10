@@ -8,13 +8,14 @@ import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
 import com.ui.pages.MyAccountPage;
+import com.ui.pages.SearchPage;
 
 @Listeners({ com.ui.listeners.TestListener.class })
 
 public class SearchProductTest extends TestBase {
 
 	private MyAccountPage myAccountPage;
-	private static final String SEARCH_TERM = "Printed Dress";
+	private static final String SEARCH_TERM = "printed Summer Dress";
 
 	@BeforeMethod(description = "Valid user logs into the application")
 	public void setup() {
@@ -27,7 +28,9 @@ public class SearchProductTest extends TestBase {
 
 	public void verifyproductSearchTest() {
 		boolean actualresult = myAccountPage.SearchItem(SEARCH_TERM).isSearchTermPresentInItemList(SEARCH_TERM);
+//		SearchPage data = myAccountPage.SearchItem(SEARCH_TERM);
 		Assert.assertEquals(actualresult, true);
+//		Assert.assertTrue(data.contains(""));
 	}
 
 }

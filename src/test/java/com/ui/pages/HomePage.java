@@ -54,11 +54,24 @@ public final class HomePage extends BrowserUtility {
 //        return new LoginPage(getDriver());
 //    }
 
-	public static void quit() {
-//		if (driver.get() != null) {
+//	public static void quit() {
+//		if (getDriver()!= null) {
 //			driver.get().quit();
 //		}
-
-	}
+//
+//	}
+	
+	public static void quit() {
+        WebDriver currentDriver = getDriver();  // fetch driver from ThreadLocal
+        if (currentDriver != null) {
+            try {
+                currentDriver.quit();  // quits the browser
+            } catch (Exception e) {
+                System.err.println("Error quitting driver: " + e.getMessage());
+            } finally {
+                removeDriver();  // remove ThreadLocal reference
+            }
+        }
+    }
 
 }

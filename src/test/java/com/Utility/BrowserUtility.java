@@ -35,7 +35,7 @@ public abstract class BrowserUtility {
 	private Logger logger = LoggerUtility.getLogger(getClass());
 	private WebDriverWait wait;
 
-	public WebDriver getDriver() {
+	public static WebDriver getDriver() {
 		return driver.get();
 	}
 
@@ -44,6 +44,10 @@ public abstract class BrowserUtility {
 		this.driver.set(driver);
 		wait = new WebDriverWait(driver, Duration.ofSeconds(30L));
 	}
+	
+	 public static void removeDriver() {
+	        driver.remove(); // clean up ThreadLocal
+	    }
 
 //	public BrowserUtility(String browserName) {
 //		logger.info("Launching browser" + browserName);

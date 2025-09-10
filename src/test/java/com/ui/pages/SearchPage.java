@@ -22,16 +22,33 @@ public final class SearchPage extends BrowserUtility {
 		return getVisibleText(ITEM_LISTING_TITLE_LOCATOR);
 	}
 
+//	public boolean isSearchTermPresentInItemList(String searchTerm) {
+//		List<String> keywords = Arrays.asList(searchTerm.toLowerCase().split(" "));
+//     List<String> itemNamesList = getAllVisibleText(ALL_ITEM_LIST_NAME);
+//
+//		boolean result = itemNamesList.stream()
+//				.anyMatch(name -> (keywords.stream().anyMatch(name.toLowerCase()::contains)));
+//		return result;
+//		
+//		
+//	}
+	
 	public boolean isSearchTermPresentInItemList(String searchTerm) {
-		List<String> keywords = Arrays.asList(searchTerm.toLowerCase().split(" "));
-     List<String> itemNamesList = getAllVisibleText(ALL_ITEM_LIST_NAME);
+	    // Get all item names from search results
+	    List<String> itemNamesList = getAllVisibleText(ALL_ITEM_LIST_NAME);
 
-		boolean result = itemNamesList.stream()
-				.anyMatch(name -> (keywords.stream().anyMatch(name.toLowerCase()::contains)));
-		return result;
-		
-		
+	    // Debug print - to verify what items are captured
+	    System.out.println("Search Results: " + itemNamesList);
+
+	    // Check if any product name contains the full search term (case-insensitive, trimmed)
+	    boolean result = itemNamesList.stream()
+	            .map(String::toLowerCase)
+	            .map(String::trim)
+	            .anyMatch(name -> name.contains(searchTerm.toLowerCase().trim()));
+
+	    return result;
 	}
+
 	
 	public ProductDetailPage clickOnTheProductAtIndex(int index) {
 		clickOn(getAllElements(ALL_ITEM_LIST_NAME).get(index));

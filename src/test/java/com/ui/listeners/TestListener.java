@@ -61,9 +61,26 @@ public class TestListener implements ITestListener {
 		ExtentReporterUtility.setupSparkReporter("report.html");
 	}
 
+//	public void onFinish(ITestContext context) {
+//		logger.info("Test Suite Completed");
+//		ExtentReporterUtility.flushReport();
+//	}
+	
+	@Override
 	public void onFinish(ITestContext context) {
-		logger.info("Test Suite Completed");
-		ExtentReporterUtility.flushReport();
+	    logger.info(">>> TestNG onFinish called for suite: " + context.getSuite().getName()
+	            + " | Passed tests: " + context.getPassedTests().size()
+	            + " | Failed tests: " + context.getFailedTests().size()
+	            + " | Skipped tests: " + context.getSkippedTests().size());
+
+	    try {
+	        ExtentReporterUtility.flushReport();
+	        logger.info("ExtentReports flushed successfully in onFinish()");
+	    } catch (Exception e) {
+	        logger.error("Error flushing ExtentReports in onFinish()", e);
+	    }
 	}
+
+
 
 }

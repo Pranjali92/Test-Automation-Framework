@@ -65,6 +65,7 @@ public class TestBase {
 
 	@AfterMethod(description = "Tear Down the Browser" , alwaysRun = true)
 	public void tearDown() {
+		System.out.println(">>> Starting tearDown on thread: " + Thread.currentThread().getId());
 		try {
 			if (isLambdaTest) {
 				LambdaTestUtility.quitSession(); // quits LambdaTest session
@@ -76,6 +77,12 @@ public class TestBase {
 			System.err.println("Error during tearDown: " + e.getMessage());
 		} finally {
 	        BrowserUtility.removeDriver();
+	        System.out.println(">>> Driver removed for thread: " + Thread.currentThread().getId());
+	    }
+		
+		System.out.println("Active threads at tearDown:");
+	    for (Thread t : Thread.getAllStackTraces().keySet()) {
+	        System.out.println(" - " + t.getName() + " (state: " + t.getState() + ")");
 	    }
 	}
 
@@ -99,10 +106,8 @@ public class TestBase {
 
 	@AfterSuite
 	public void cleanUpSuite() {
+		 System.out.println(">>> ENTERED @AfterSuite <<<");
 	    try {
-	        ExtentReporterUtility.flushReport();
-	        System.out.println("ExtentReports flushed and closed");
-
 	        BrowserUtility.removeDriver();
 	        System.out.println("ThreadLocal WebDriver cleaned up");
 

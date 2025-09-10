@@ -205,23 +205,49 @@ public abstract class BrowserUtility {
 
 	}
 
+//	public String takeScreenShot(String name) {
+//
+//		TakesScreenshot screenShot = (TakesScreenshot) driver.get();
+//		File screenShotData = screenShot.getScreenshotAs(OutputType.FILE);
+//		Date date = new Date();
+//		SimpleDateFormat format = new SimpleDateFormat("HH-mm-ss");
+//		String timestamp = format.format(date);
+//		String path = "./Screenshots/" + name + "-" + timestamp + ".png";
+//		File screenShotFile = new File(path);
+//
+//		try {
+//			FileUtils.copyFile(screenShotData, screenShotFile);
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//		return path;
+//	}
+	
 	public String takeScreenShot(String name) {
 
-		TakesScreenshot screenShot = (TakesScreenshot) driver.get();
-		File screenShotData = screenShot.getScreenshotAs(OutputType.FILE);
-		Date date = new Date();
-		SimpleDateFormat format = new SimpleDateFormat("HH-mm-ss");
-		String timestamp = format.format(date);
-		String path = "./Screenshots/" + name + "-" + timestamp + ".png";
-		File screenShotFile = new File(path);
+	    // Ensure the Screenshots folder exists
+	    File screenshotsFolder = new File("./Screenshots/");
+	    if (!screenshotsFolder.exists()) {
+	        screenshotsFolder.mkdirs();
+	    }
 
-		try {
-			FileUtils.copyFile(screenShotData, screenShotFile);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return path;
+	    TakesScreenshot screenShot = (TakesScreenshot) driver.get();
+	    File screenShotData = screenShot.getScreenshotAs(OutputType.FILE);
+	    Date date = new Date();
+	    SimpleDateFormat format = new SimpleDateFormat("HH-mm-ss");
+	    String timestamp = format.format(date);
+	    String path = "./Screenshots/" + name + "-" + timestamp + ".png";
+	    File screenShotFile = new File(path);
+
+	    try {
+	        FileUtils.copyFile(screenShotData, screenShotFile);
+	        System.out.println("Screenshot saved: " + path);  // optional confirmation
+	    } catch (IOException e) {
+	        e.printStackTrace();
+	    }
+	    return path;
 	}
+
 
 }

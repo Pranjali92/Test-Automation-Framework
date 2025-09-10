@@ -10,6 +10,7 @@ import org.testng.annotations.AfterSuite;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Optional;
 import org.testng.annotations.Parameters;
+import org.apache.logging.log4j.LogManager;
 
 import com.Utility.BrowserUtility;
 import com.Utility.ExtentReporterUtility;
@@ -73,20 +74,46 @@ public class TestBase {
 		}
 	}
 
+//	@AfterSuite
+//	public void cleanUpSuite() {
+//		try {
+//			// Flush ExtentReports
+//			ExtentReporterUtility.flushReport();
+//			System.out.println("ExtentReports flushed and closed");
+//
+//			// Remove ThreadLocal WebDriver
+//			BrowserUtility.removeDriver();
+//			System.out.println("ThreadLocal WebDriver cleaned up");
+//
+//		} catch (Exception e) {
+//			System.err.println("Error during suite cleanup: " + e.getMessage());
+//		}
+//	}
+	
+
+
 	@AfterSuite
 	public void cleanUpSuite() {
-		try {
-			// Flush ExtentReports
-			ExtentReporterUtility.flushReport();
-			System.out.println("ExtentReports flushed and closed");
+	    try {
+	        // Flush ExtentReports
+	        ExtentReporterUtility.flushReport();
+	        System.out.println("ExtentReports flushed and closed");
 
-			// Remove ThreadLocal WebDriver
-			BrowserUtility.removeDriver();
-			System.out.println("ThreadLocal WebDriver cleaned up");
+	        // Remove ThreadLocal WebDriver
+	        BrowserUtility.removeDriver();
+	        System.out.println("ThreadLocal WebDriver cleaned up");
 
-		} catch (Exception e) {
-			System.err.println("Error during suite cleanup: " + e.getMessage());
-		}
+	        // Shutdown Log4j background threads
+	        LogManager.shutdown();
+	        System.out.println("Log4j shutdown completed");
+
+	    } catch (Exception e) {
+	        System.err.println("Error during suite cleanup: " + e.getMessage());
+	    } finally {
+	        // Force JVM exit to avoid GitHub Actions hang
+	        System.exit(0);
+	    }
 	}
+
 
 }

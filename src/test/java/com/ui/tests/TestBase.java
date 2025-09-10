@@ -75,10 +75,11 @@ public class TestBase {
 			System.out.println("tearDown completed: Browser quit successfully");
 		} catch (Exception e) {
 			System.err.println("Error during tearDown: " + e.getMessage());
-		} finally {
-	        BrowserUtility.removeDriver();
-	        System.out.println(">>> Driver removed for thread: " + Thread.currentThread().getId());
-	    }
+		}
+//		finally {
+//	        BrowserUtility.removeDriver();
+//	        System.out.println(">>> Driver removed for thread: " + Thread.currentThread().getId());
+//	    }
 		
 		System.out.println("Active threads at tearDown:");
 	    for (Thread t : Thread.getAllStackTraces().keySet()) {
@@ -128,7 +129,7 @@ public class TestBase {
 	        System.err.println("Error during suite cleanup: " + e.getMessage());
 	    } finally {
 	        new Thread(() -> {
-	            try { Thread.sleep(1000); } catch (InterruptedException ignored) {}
+	            try { Thread.sleep(4000); } catch (InterruptedException ignored) {}
 	            System.exit(0);
 	        }).start();
 	    }

@@ -1,7 +1,7 @@
 <!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
 
 <suite name="Automation Practice Tests Suite" parallel="methods"
-	thread-count="8" verbose="1" time-out="60000">
+	thread-count="8" verbose="1">
 	<test name="UI Automation Tests">
 		<parameter name="browser" value="${browser}" />
 		<parameter name="isLambdaTest" value="${isLambdaTest}" />

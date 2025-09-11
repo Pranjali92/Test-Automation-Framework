@@ -1,22 +1,14 @@
 package com.ui.tests;
 
-import static com.constants.Browser.*;
-
-import java.util.Set;
-
 import com.ui.pages.HomePage;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.WebDriver;
 import org.testng.ITestResult;
 import org.testng.annotations.AfterMethod;
-import org.testng.annotations.AfterSuite;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Optional;
 import org.testng.annotations.Parameters;
-import org.apache.logging.log4j.LogManager;
-
 import com.Utility.BrowserUtility;
-import com.Utility.ExtentReporterUtility;
 import com.Utility.LambdaTestUtility;
 import com.Utility.LoggerUtility;
 import com.constants.Browser;
@@ -28,15 +20,14 @@ public class TestBase {
 	private boolean isLambdaTest;
 	private WebDriver lambdaDriver;
 
-	@Parameters({ "browser", "isLambdaTest", "isHeadless" })
 	@BeforeMethod(description = "Load the HomePage of the website")
+	@Parameters({ "browser", "isLambdaTest", "isHeadless" })
 	public void Setup(@Optional("chrome") String browser, @Optional("false") boolean isLambdaTest,
 			@Optional("false") boolean isHeadless, ITestResult result) {
 
 		this.isLambdaTest = isLambdaTest;
 
 		if (isLambdaTest) {
-
 			lambdaDriver = LambdaTestUtility.initializeLambdaSession(browser, result.getMethod().getMethodName());
 			homepage = new HomePage(lambdaDriver);
 		} else {
@@ -60,114 +51,8 @@ public class TestBase {
 
 		} else {
 			HomePage.quit();
-		
+
 		}
 	}
-	
-//	@AfterMethod(description = "Tear Down the Browser" , alwaysRun = true)
-//	public void tearDown() {
-//		System.out.println(">>> Starting tearDown on thread: " + Thread.currentThread().getId());
-//		try {
-//			if (isLambdaTest) {
-//				LambdaTestUtility.quitSession(); // quits LambdaTest session
-//			} else {
-//				HomePage.quit(); // quits local headless browser
-//			}
-//			System.out.println("tearDown completed: Browser quit successfully");
-//		} catch (Exception e) {
-//			System.err.println("Error during tearDown: " + e.getMessage());
-//		}
-//		finally {
-//	        BrowserUtility.removeDriver();
-//	        System.out.println(">>> Driver removed for thread: " + Thread.currentThread().getId());
-//	    }
-//		
-//		System.out.println("Active threads at tearDown:");
-//	    for (Thread t : Thread.getAllStackTraces().keySet()) {
-//	        System.out.println(" - " + t.getName() + " (state: " + t.getState() + ")");
-//	    }
-//	}
 
-//	@AfterSuite
-//	public void cleanUpSuite() {
-//		try {
-//			// Flush ExtentReports
-//			ExtentReporterUtility.flushReport();
-//			System.out.println("ExtentReports flushed and closed");
-//
-//			// Remove ThreadLocal WebDriver
-//			BrowserUtility.removeDriver();
-//			System.out.println("ThreadLocal WebDriver cleaned up");
-//
-//		} catch (Exception e) {
-//			System.err.println("Error during suite cleanup: " + e.getMessage());
-//		}
-//	}
-	
-//	@AfterSuite(alwaysRun = true)
-//	public void cleanUpSuite() {
-//	    System.out.println(">>> ENTERED @AfterSuite <<<");
-//	    try {
-//	        // Flush reports once at suite end
-//	        ExtentReporterUtility.flushReport();
-//	        System.out.println("ExtentReports flushed");
-//
-//	        // Shutdown Log4j background threads
-//	        LogManager.shutdown();
-//	        System.out.println("Log4j shutdown completed");
-//
-//	        // 🔎 List active threads for debugging
-//	        Set<Thread> threadSet = Thread.getAllStackTraces().keySet();
-//	        System.out.println("=== Live Threads at Suite End ===");
-//	        for (Thread t : threadSet) {
-//	            System.out.println("Thread: " + t.getName()
-//	                + " | Daemon: " + t.isDaemon()
-//	                + " | State: " + t.getState());
-//	        }
-//	        System.out.println("================================");
-//
-//	    } catch (Exception e) {
-//	        System.err.println("Error during suite cleanup: " + e.getMessage());
-//	    }
-//
-//	    // ⚡ Instead of killing JVM directly,
-//	    // register a shutdown hook → JVM exits naturally once non-daemon threads finish
-//	    Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-//	        System.out.println(">>> JVM shutdown hook executed <<<");
-//	    }));
-//	}
-	
-//	@AfterSuite(alwaysRun = true)
-//	public void cleanUpSuite() {
-//	    System.out.println(">>> ENTERED @AfterSuite <<<");
-//	    try {
-//	        // ✅ Flush reports once at suite end
-//	        ExtentReporterUtility.flushReport();
-//	        System.out.println("ExtentReports flushed");
-//
-//	        // ✅ Shutdown Log4j background threads
-//	        LogManager.shutdown();
-//	        System.out.println("Log4j shutdown completed");
-//
-//	        // ✅ Final cleanup of any leftover ThreadLocal WebDriver
-////	        BrowserUtility.removeDriver();
-////	        System.out.println("ThreadLocal WebDriver cleaned up at suite level");
-//
-//	        // 🔎 Debug active threads at suite end
-//	        Set<Thread> threadSet = Thread.getAllStackTraces().keySet();
-//	        System.out.println("=== Live Threads at Suite End ===");
-//	        for (Thread t : threadSet) {
-//	            System.out.println("Thread: " + t.getName()
-//	                + " | Daemon: " + t.isDaemon()
-//	                + " | State: " + t.getState());
-//	        }
-//	        System.out.println("================================");
-//
-//	    } catch (Exception e) {
-//	        System.err.println("Error during suite cleanup: " + e.getMessage());
-//	    }
-//	}
-
-
-	
 }

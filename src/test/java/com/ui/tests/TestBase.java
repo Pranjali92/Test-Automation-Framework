@@ -103,19 +103,56 @@ public class TestBase {
 //		}
 //	}
 	
+//	@AfterSuite(alwaysRun = true)
+//	public void cleanUpSuite() {
+//	    System.out.println(">>> ENTERED @AfterSuite <<<");
+//	    try {
+//	        // Flush reports once at suite end
+//	        ExtentReporterUtility.flushReport();
+//	        System.out.println("ExtentReports flushed");
+//
+//	        // Shutdown Log4j background threads
+//	        LogManager.shutdown();
+//	        System.out.println("Log4j shutdown completed");
+//
+//	        // 🔎 List active threads for debugging
+//	        Set<Thread> threadSet = Thread.getAllStackTraces().keySet();
+//	        System.out.println("=== Live Threads at Suite End ===");
+//	        for (Thread t : threadSet) {
+//	            System.out.println("Thread: " + t.getName()
+//	                + " | Daemon: " + t.isDaemon()
+//	                + " | State: " + t.getState());
+//	        }
+//	        System.out.println("================================");
+//
+//	    } catch (Exception e) {
+//	        System.err.println("Error during suite cleanup: " + e.getMessage());
+//	    }
+//
+//	    // ⚡ Instead of killing JVM directly,
+//	    // register a shutdown hook → JVM exits naturally once non-daemon threads finish
+//	    Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+//	        System.out.println(">>> JVM shutdown hook executed <<<");
+//	    }));
+//	}
+	
 	@AfterSuite(alwaysRun = true)
 	public void cleanUpSuite() {
 	    System.out.println(">>> ENTERED @AfterSuite <<<");
 	    try {
-	        // Flush reports once at suite end
+	        // ✅ Flush reports once at suite end
 	        ExtentReporterUtility.flushReport();
 	        System.out.println("ExtentReports flushed");
 
-	        // Shutdown Log4j background threads
+	        // ✅ Shutdown Log4j background threads
 	        LogManager.shutdown();
 	        System.out.println("Log4j shutdown completed");
 
-	        // 🔎 List active threads for debugging
+	        // ✅ Final cleanup of any leftover ThreadLocal WebDriver
+	        BrowserUtility.removeDriver();
+	        System.out.println("ThreadLocal WebDriver cleaned up at suite level");
+
+	        // 🔎 Debug active threads at suite end
 	        Set<Thread> threadSet = Thread.getAllStackTraces().keySet();
 	        System.out.println("=== Live Threads at Suite End ===");
 	        for (Thread t : threadSet) {
@@ -128,20 +165,8 @@ public class TestBase {
 	    } catch (Exception e) {
 	        System.err.println("Error during suite cleanup: " + e.getMessage());
 	    }
-
-	    // ⚡ Instead of killing JVM directly,
-	    // register a shutdown hook → JVM exits naturally once non-daemon threads finish
-	    Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-	        System.out.println(">>> JVM shutdown hook executed <<<");
-	    }));
 	}
 
-	
-
-
-
 
 	
-
-
 }

@@ -68,10 +68,13 @@ public final class HomePage extends BrowserUtility {
                 currentDriver.quit();  // quits the browser
             } catch (Exception e) {
                 System.err.println("Error quitting driver: " + e.getMessage());
-            } finally {
+            } 
+            finally {
                 removeDriver();  // remove ThreadLocal reference
             }
         }
     }
+	
+	
 
 }

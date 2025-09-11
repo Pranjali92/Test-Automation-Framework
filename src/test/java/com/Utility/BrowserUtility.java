@@ -39,13 +39,12 @@ public abstract class BrowserUtility {
     }
 
     public BrowserUtility(WebDriver driver) {
-        super();
         this.driver.set(driver);
         wait = new WebDriverWait(driver, Duration.ofSeconds(30L));
     }
 
     public static void removeDriver() {
-        driver.remove(); // clean up ThreadLocal
+        driver.remove();
     }
 
     public BrowserUtility(Browser browserName, boolean isHeadless) {
@@ -53,194 +52,152 @@ public abstract class BrowserUtility {
         if (browserName == Browser.CHROME) {
             ChromeOptions options = new ChromeOptions();
             if (isHeadless) {
-                options.addArguments("--headless=new", "--disable-gpu", "--no-sandbox", "--disable-dev-shm-usage", "--window-size=1920,1080");
+                options.addArguments("--headless=new");
+                options.addArguments("--disable-gpu");
+                options.addArguments("--no-sandbox");
+                options.addArguments("--disable-dev-shm-usage");
+                options.addArguments("--window-size=1920,1080");
             }
             driver.set(new ChromeDriver(options));
         } else if (browserName == Browser.EDGE) {
             EdgeOptions options = new EdgeOptions();
             if (isHeadless) {
-                options.addArguments("--headless=new", "disable-gpu");
+                options.addArguments("--headless=new");
+                options.addArguments("--disable-gpu");
             }
             driver.set(new EdgeDriver(options));
         } else if (browserName == Browser.FIREFOX) {
             FirefoxOptions options = new FirefoxOptions();
             if (isHeadless) {
-                options.addArguments("--headless=old");
+                options.addArguments("--headless");
             }
             driver.set(new FirefoxDriver(options));
-        } else {
-            logger.error("Invalid Browser Name. Please use Chrome, Edge, or Firefox.");
-            throw new IllegalArgumentException("Invalid browser: " + browserName);
         }
-
         wait = new WebDriverWait(driver.get(), Duration.ofSeconds(30L));
     }
 
     public void goToWebsite(String url) {
-        logger.info("Navigating to website: " + url);
+        logger.info("Visiting the website: " + url);
         driver.get().get(url);
     }
 
     public void maximizeWindow() {
-        logger.info("Maximizing browser window");
+        logger.info("Maximizing the browser window");
         driver.get().manage().window().maximize();
     }
 
-    // Click methods
+    private void retryAction(Runnable action, String actionDescription) {
+        int attempts = 0;
+        boolean success = false;
+        while (attempts < 3 && !success) {
+            try {
+                action.run();
+                success = true;
+            } catch (Exception e) {
+                attempts++;
+                logger.warn("Attempt " + attempts + " failed for action: " + actionDescription + " | " + e.getMessage());
+                if (attempts >= 3) {
+                    logger.error("Action failed after " + attempts + " attempts: " + actionDescription, e);
+                    throw e;
+                }
+                try {
+                    Thread.sleep(500); // small wait before retry
+                } catch (InterruptedException ie) {
+                    Thread.currentThread().interrupt();
+                }
+            }
+        }
+    }
+
     public void clickOn(By locator) {
-        try {
+        retryAction(() -> {
             WebElement element = wait.until(ExpectedConditions.elementToBeClickable(locator));
             element.click();
-            logger.info("Clicked on element: " + locator);
-        } catch (Exception e) {
-            logger.error("Failed to click element: " + locator, e);
-            throw e;
-        }
+        }, "Click on element: " + locator);
     }
 
     public void clickOnCheckBox(By locator) {
-        try {
+        retryAction(() -> {
             WebElement element = wait.until(ExpectedConditions.visibilityOfElementLocated(locator));
             element.click();
-            logger.info("Clicked on checkbox: " + locator);
-        } catch (Exception e) {
-            logger.error("Failed to click checkbox: " + locator, e);
-            throw e;
-        }
+        }, "Click on checkbox: " + locator);
     }
 
     public void clickOn(WebElement element) {
-        try {
-            element.click();
-            logger.info("Clicked on WebElement");
-        } catch (Exception e) {
-            logger.error("Failed to click WebElement", e);
-            throw e;
-        }
+        retryAction(element::click, "Click on WebElement");
     }
 
-    // Text input methods
     public void enterText(By locator, String textToEnter) {
-        try {
+        retryAction(() -> {
             WebElement element = wait.until(ExpectedConditions.visibilityOfElementLocated(locator));
             element.clear();
             element.sendKeys(textToEnter);
-            logger.info("Entered text '" + textToEnter + "' into element: " + locator);
-        } catch (Exception e) {
-            logger.error("Failed to enter text into element: " + locator, e);
-            throw e;
-        }
-    }
-
-    public void clearText(By locator) {
-        try {
-            WebElement element = wait.until(ExpectedConditions.visibilityOfElementLocated(locator));
-            element.clear();
-            logger.info("Cleared text from element: " + locator);
-        } catch (Exception e) {
-            logger.error("Failed to clear text from element: " + locator, e);
-            throw e;
-        }
-    }
-
-    public void selectFromDropdown(By locator, String optionToSelect) {
-        try {
-            WebElement element = wait.until(ExpectedConditions.visibilityOfElementLocated(locator));
-            Select select = new Select(element);
-            select.selectByVisibleText(optionToSelect);
-            logger.info("Selected '" + optionToSelect + "' from dropdown: " + locator);
-        } catch (Exception e) {
-            logger.error("Failed to select from dropdown: " + locator, e);
-            throw e;
-        }
+        }, "Enter text '" + textToEnter + "' into element: " + locator);
     }
 
     public void enterSpecialKey(By locator, Keys keyToEnter) {
-        try {
+        retryAction(() -> {
             WebElement element = wait.until(ExpectedConditions.visibilityOfElementLocated(locator));
             element.sendKeys(keyToEnter);
-            logger.info("Entered special key '" + keyToEnter + "' into element: " + locator);
-        } catch (Exception e) {
-            logger.error("Failed to enter special key into element: " + locator, e);
-            throw e;
-        }
+        }, "Enter special key '" + keyToEnter + "' into element: " + locator);
     }
 
-    // Get text
+    public void clearText(By textBoxLocator) {
+        retryAction(() -> {
+            WebElement element = wait.until(ExpectedConditions.visibilityOfElementLocated(textBoxLocator));
+            element.clear();
+        }, "Clear text in element: " + textBoxLocator);
+    }
+
+    public void selectFromDropdown(By dropDownLocator, String optionToSelect) {
+        retryAction(() -> {
+            WebElement element = wait.until(ExpectedConditions.visibilityOfElementLocated(dropDownLocator));
+            Select select = new Select(element);
+            select.selectByVisibleText(optionToSelect);
+        }, "Select '" + optionToSelect + "' from dropdown: " + dropDownLocator);
+    }
+
     public String getVisibleText(By locator) {
-        try {
-            WebElement element = wait.until(ExpectedConditions.visibilityOfElementLocated(locator));
-            String text = element.getText();
-            logger.info("Retrieved text: " + text + " from element: " + locator);
-            return text;
-        } catch (Exception e) {
-            logger.error("Failed to get text from element: " + locator, e);
-            throw e;
-        }
+        WebElement element = wait.until(ExpectedConditions.visibilityOfElementLocated(locator));
+        return element.getText();
     }
 
     public String getVisibleText(WebElement element) {
-        try {
-            String text = element.getText();
-            logger.info("Retrieved text: " + text + " from WebElement");
-            return text;
-        } catch (Exception e) {
-            logger.error("Failed to get text from WebElement", e);
-            throw e;
-        }
+        return element.getText();
     }
 
     public List<String> getAllVisibleText(By locator) {
+        List<WebElement> elementList = driver.get().findElements(locator);
         List<String> visibleTextList = new ArrayList<>();
-        try {
-            List<WebElement> elements = driver.get().findElements(locator);
-            for (WebElement element : elements) {
-                visibleTextList.add(getVisibleText(element));
-            }
-            return visibleTextList;
-        } catch (Exception e) {
-            logger.error("Failed to get all visible texts from elements: " + locator, e);
-            throw e;
+        for (WebElement element : elementList) {
+            visibleTextList.add(getVisibleText(element));
         }
+        return visibleTextList;
     }
 
     public List<WebElement> getAllElements(By locator) {
-        try {
-            List<WebElement> elements = driver.get().findElements(locator);
-            logger.info("Retrieved " + elements.size() + " elements for locator: " + locator);
-            return elements;
-        } catch (Exception e) {
-            logger.error("Failed to get all elements: " + locator, e);
-            throw e;
-        }
+        return driver.get().findElements(locator);
     }
 
-    // Screenshots
     public String takeScreenShot(String name) {
         File screenshotsFolder = new File("./Screenshots/");
-        if (!screenshotsFolder.exists()) {
-            screenshotsFolder.mkdirs();
-        }
+        if (!screenshotsFolder.exists()) screenshotsFolder.mkdirs();
 
         TakesScreenshot screenShot = (TakesScreenshot) driver.get();
         File screenShotData = screenShot.getScreenshotAs(OutputType.FILE);
         String timestamp = new SimpleDateFormat("HH-mm-ss").format(new Date());
         String path = "./Screenshots/" + name + "-" + timestamp + ".png";
         File screenShotFile = new File(path);
-
         try {
             FileUtils.copyFile(screenShotData, screenShotFile);
-            logger.info("Screenshot saved: " + path);
+            System.out.println("Screenshot saved: " + path);
         } catch (IOException e) {
-            logger.error("Failed to save screenshot: " + path, e);
+            e.printStackTrace();
         }
         return path;
     }
 
     public static void quit() {
-        if (driver.get() != null) {
-            driver.get().quit();
-            driver.remove();
-        }
+        if (driver.get() != null) driver.get().quit();
     }
 }

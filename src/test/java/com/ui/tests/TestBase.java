@@ -52,40 +52,41 @@ public class TestBase {
 		return homepage;
 	}
 
-//	@AfterMethod(description = "Tear Down the Browser")
-//	public void tearDown() {
-//
-//		if (isLambdaTest) {
-//			LambdaTestUtility.quitSession();
-//
-//		} else {
-//			HomePage.quit();
-//		}
-//	}
-
-	@AfterMethod(description = "Tear Down the Browser" , alwaysRun = true)
+	@AfterMethod(description = "Tear Down the Browser")
 	public void tearDown() {
-		System.out.println(">>> Starting tearDown on thread: " + Thread.currentThread().getId());
-		try {
-			if (isLambdaTest) {
-				LambdaTestUtility.quitSession(); // quits LambdaTest session
-			} else {
-				HomePage.quit(); // quits local headless browser
-			}
-			System.out.println("tearDown completed: Browser quit successfully");
-		} catch (Exception e) {
-			System.err.println("Error during tearDown: " + e.getMessage());
+
+		if (isLambdaTest) {
+			LambdaTestUtility.quitSession();
+
+		} else {
+			HomePage.quit();
+		
 		}
+	}
+	
+//	@AfterMethod(description = "Tear Down the Browser" , alwaysRun = true)
+//	public void tearDown() {
+//		System.out.println(">>> Starting tearDown on thread: " + Thread.currentThread().getId());
+//		try {
+//			if (isLambdaTest) {
+//				LambdaTestUtility.quitSession(); // quits LambdaTest session
+//			} else {
+//				HomePage.quit(); // quits local headless browser
+//			}
+//			System.out.println("tearDown completed: Browser quit successfully");
+//		} catch (Exception e) {
+//			System.err.println("Error during tearDown: " + e.getMessage());
+//		}
 //		finally {
 //	        BrowserUtility.removeDriver();
 //	        System.out.println(">>> Driver removed for thread: " + Thread.currentThread().getId());
 //	    }
-		
-		System.out.println("Active threads at tearDown:");
-	    for (Thread t : Thread.getAllStackTraces().keySet()) {
-	        System.out.println(" - " + t.getName() + " (state: " + t.getState() + ")");
-	    }
-	}
+//		
+//		System.out.println("Active threads at tearDown:");
+//	    for (Thread t : Thread.getAllStackTraces().keySet()) {
+//	        System.out.println(" - " + t.getName() + " (state: " + t.getState() + ")");
+//	    }
+//	}
 
 //	@AfterSuite
 //	public void cleanUpSuite() {
@@ -136,36 +137,36 @@ public class TestBase {
 //	    }));
 //	}
 	
-	@AfterSuite(alwaysRun = true)
-	public void cleanUpSuite() {
-	    System.out.println(">>> ENTERED @AfterSuite <<<");
-	    try {
-	        // ✅ Flush reports once at suite end
-	        ExtentReporterUtility.flushReport();
-	        System.out.println("ExtentReports flushed");
-
-	        // ✅ Shutdown Log4j background threads
-	        LogManager.shutdown();
-	        System.out.println("Log4j shutdown completed");
-
-	        // ✅ Final cleanup of any leftover ThreadLocal WebDriver
-//	        BrowserUtility.removeDriver();
-//	        System.out.println("ThreadLocal WebDriver cleaned up at suite level");
-
-	        // 🔎 Debug active threads at suite end
-	        Set<Thread> threadSet = Thread.getAllStackTraces().keySet();
-	        System.out.println("=== Live Threads at Suite End ===");
-	        for (Thread t : threadSet) {
-	            System.out.println("Thread: " + t.getName()
-	                + " | Daemon: " + t.isDaemon()
-	                + " | State: " + t.getState());
-	        }
-	        System.out.println("================================");
-
-	    } catch (Exception e) {
-	        System.err.println("Error during suite cleanup: " + e.getMessage());
-	    }
-	}
+//	@AfterSuite(alwaysRun = true)
+//	public void cleanUpSuite() {
+//	    System.out.println(">>> ENTERED @AfterSuite <<<");
+//	    try {
+//	        // ✅ Flush reports once at suite end
+//	        ExtentReporterUtility.flushReport();
+//	        System.out.println("ExtentReports flushed");
+//
+//	        // ✅ Shutdown Log4j background threads
+//	        LogManager.shutdown();
+//	        System.out.println("Log4j shutdown completed");
+//
+//	        // ✅ Final cleanup of any leftover ThreadLocal WebDriver
+////	        BrowserUtility.removeDriver();
+////	        System.out.println("ThreadLocal WebDriver cleaned up at suite level");
+//
+//	        // 🔎 Debug active threads at suite end
+//	        Set<Thread> threadSet = Thread.getAllStackTraces().keySet();
+//	        System.out.println("=== Live Threads at Suite End ===");
+//	        for (Thread t : threadSet) {
+//	            System.out.println("Thread: " + t.getName()
+//	                + " | Daemon: " + t.isDaemon()
+//	                + " | State: " + t.getState());
+//	        }
+//	        System.out.println("================================");
+//
+//	    } catch (Exception e) {
+//	        System.err.println("Error during suite cleanup: " + e.getMessage());
+//	    }
+//	}
 
 
 	

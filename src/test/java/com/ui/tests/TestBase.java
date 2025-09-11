@@ -149,8 +149,8 @@ public class TestBase {
 	        System.out.println("Log4j shutdown completed");
 
 	        // ✅ Final cleanup of any leftover ThreadLocal WebDriver
-	        BrowserUtility.removeDriver();
-	        System.out.println("ThreadLocal WebDriver cleaned up at suite level");
+//	        BrowserUtility.removeDriver();
+//	        System.out.println("ThreadLocal WebDriver cleaned up at suite level");
 
 	        // 🔎 Debug active threads at suite end
 	        Set<Thread> threadSet = Thread.getAllStackTraces().keySet();
